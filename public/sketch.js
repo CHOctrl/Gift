@@ -1,16 +1,17 @@
 let font;
 let particles = [];
-let words = ["Surprise!", "For You", "<3", "Love"];
+let words = ["พี่ว่าน", "Love You", "Cute", "<3"]; // Custom text
 let wordIndex = 0;
 let fontSize;
 
 function preload() {
-  // Load the font we downloaded
-  font = loadFont('assets/Pacifico-Regular.ttf');
+  // Load the new Thai-supported font
+  font = loadFont('assets/Mali-Medium.ttf');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  // Use HSB for vibrant colors
   colorMode(HSB, 360, 100, 100, 100);
   fontSize = min(width, height) / 5;
   textFont(font);
@@ -22,7 +23,8 @@ function setup() {
 }
 
 function draw() {
-  background(260, 20, 10, 20); // Deep dark purple background with trails
+  // Minimal Pink Background (very light pink/white with alpha for trails)
+  background(340, 5, 100, 20); //
 
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
@@ -52,7 +54,7 @@ function generateParticles(txt) {
   let yStart = height / 2 + bounds.h / 2;
 
   let points = font.textToPoints(txt, xStart, yStart, fontSize, {
-    sampleFactor: 0.25, // Higher = more points
+    sampleFactor: 0.3, // Higher = more points (adjust for density)
     simplifyThreshold: 0
   });
 
@@ -69,13 +71,15 @@ class Particle {
     this.target = createVector(x, y);
     this.vel = p5.Vector.random2D();
     this.acc = createVector();
-    this.r = 4;
-    this.maxSpeed = 10;
-    this.maxForce = 1;
-    // Cute color palette: Pinks, Purples, Cyans
-    this.hue = random(280, 340);
-    this.sat = random(60, 100);
-    this.bright = random(80, 100);
+    this.r = 3; // Smaller, more minimal points
+    this.maxSpeed = 8;
+    this.maxForce = 0.8;
+
+    // Minimal Pink Palette
+    // Focus on hues around 330-350 (Rose/Pink) with varied saturation
+    this.hue = random(320, 350);
+    this.sat = random(40, 80); // Softer colors
+    this.bright = random(90, 100); // Bright/Pastel
   }
 
   behaviors() {
@@ -83,9 +87,9 @@ class Particle {
     let mouse = createVector(mouseX, mouseY);
     let flee = this.flee(mouse);
 
-    // Add some noise for organic movement ("forefront" generative feel)
-    let n = noise(this.pos.x * 0.01, this.pos.y * 0.01, frameCount * 0.01);
-    let noiseForce = p5.Vector.fromAngle(n * TWO_PI).mult(0.1);
+    // Subtle noise for minimal, gentle movement
+    let n = noise(this.pos.x * 0.005, this.pos.y * 0.005, frameCount * 0.005);
+    let noiseForce = p5.Vector.fromAngle(n * TWO_PI).mult(0.05);
 
     arrive.mult(1);
     flee.mult(5);
@@ -103,9 +107,6 @@ class Particle {
     this.pos.add(this.vel);
     this.vel.add(this.acc);
     this.acc.mult(0);
-
-    // Change color slightly over time
-    this.hue = (this.hue + 0.5) % 360;
   }
 
   show() {
